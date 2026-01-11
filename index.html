@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Camera Access</title>
+<style>
+body{
+  margin:0;
+  background:black;
+  color:#00ff00;
+  font-family:monospace;
+  height:100vh;
+  overflow:hidden;
+}
+#log{
+  padding:20px;
+  font-size:16px;
+  white-space:pre-line;
+}
+
+/* POPUP */
+#popup{
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.85);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+.box{
+  border:2px solid #00ff00;
+  padding:20px;
+  text-align:center;
+  width:80%;
+  max-width:400px;
+}
+.box button{
+  margin:10px;
+  padding:10px 20px;
+  font-family:monospace;
+  font-size:16px;
+  cursor:pointer;
+}
+.allow{background:#00aa00;color:black;}
+.deny{background:#aa0000;color:white;}
+
+/* FLASH 1 LẦN */
+.flash-once{
+  animation: flash 0.15s 3;
+}
+@keyframes flash{
+  0%{background:black}
+  50%{background:white}
+  100%{background:black}
+}
+
+/* TEXT */
+.notice{
+  color:#ffaa00;
+  font-size:18px;
+  margin:20px;
+}
+.warning{
+  color:red;
+  font-size:24px;
+  text-align:center;
+  margin-top:30px;
+}
+</style>
+</head>
+<body>
+
+<div id="log"></div>
+
+<div id="popup">
+  <div class="box">
+    <p>Người dùng có cho phép <b>HÙNG</b> truy cập camera không?</p>
+    <button class="allow" onclick="choose(true)">CHO PHÉP</button>
+    <button class="deny" onclick="choose(false)">KHÔNG CHO PHÉP</button>
+  </div>
+</div>
+
+<script>
+const logs = [
+  "[SYSTEM] Initializing camera...",
+  "[SYSTEM] Hết giờ hối hận rồi...",
+  "[SYSTEM] Camera module detected",
+  "[SYSTEM] Awaiting user response..."
+];
+
+let i = 0;
+const log = document.getElementById("log");
+const popup = document.getElementById("popup");
+
+function writeLog(){
+  if(i < logs.length){
+    log.innerHTML += logs[i] + "\n";
+    i++;
+    setTimeout(writeLog, 800);
+  }else{
+    popup.style.display = "flex";
+  }
+}
+
+function choose(allow){
+  popup.style.display = "none";
+
+  const msg = document.createElement("div");
+  msg.className = "notice";
+  msg.innerText = allow
+    ? "✔ Cảm ơn rất nhiều"
+    : "✖ Đếch quan tâm, vẫn truy cập";
+  document.body.appendChild(msg);
+
+  setTimeout(()=>{
+    document.body.classList.add("flash-once");
+
+    setTimeout(()=>{
+      const w = document.createElement("div");
+      w.className = "warning";
+      w.innerText =
+        "⚠ CAMERA  ĐÃ ĐƯỢC KÍCH HOẠT   ⚠\nHÌNH ẢNH ĐÃ ĐƯỢC GHI LẠI. MÀY XONG MÀY GÒI ";
+      document.body.appendChild(w);
+    },600);
+
+  },800);
+}
+
+writeLog();
+</script>
+
+</body>
+</html>
